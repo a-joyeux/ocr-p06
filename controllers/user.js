@@ -1,8 +1,9 @@
 const req = require("express/lib/request");
 const res = require("express/lib/response");
 var User = require("../models/user.js");
+const { ErrorHandler } = require("../helpers/error.js");
 
-function createUser(payload) {
+function createUser(payload, next) {
   const user = new User(payload);
   return user
     .save()
@@ -11,9 +12,7 @@ function createUser(payload) {
       return user;
     })
     .catch((err) => {
-      res.status(500);
-      console.log(err);
-      return err;
+      throw new ErrorHandler(500, "Error message");
     });
 }
 

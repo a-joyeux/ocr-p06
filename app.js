@@ -15,6 +15,9 @@ mongoose
 
     app.use(bodyParser.json());
     app.use(router);
+    app.use((err, req, res, next) => {
+      handleError(err, res);
+    });
     app.listen(port, () => {
       console.log(`Example app listening on port ${port}`);
     });

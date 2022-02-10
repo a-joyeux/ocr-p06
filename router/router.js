@@ -7,8 +7,8 @@ router.get("/", function (req, res) {
   res.send("Hello world!");
 });
 
-router.post("/api/auth/signup", function (req, res) {
-  User.createUser(req.body).then((response) => {
+router.post("/api/auth/signup", function (req, res, next) {
+  User.createUser(req.body, next).then((response) => {
     res.send(response);
   });
 });
