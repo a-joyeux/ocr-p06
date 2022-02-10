@@ -7,6 +7,16 @@ router.get("/", function (req, res) {
   res.send("Hello world!");
 });
 
+router.post("/api/auth/login", function (req, res, next) {
+  User.loginUser(req.body, next)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+// Create a new user
 router.post("/api/auth/signup", function (req, res, next) {
   User.createUser(req.body, next)
     .then((response) => {

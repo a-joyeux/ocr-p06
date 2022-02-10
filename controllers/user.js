@@ -1,9 +1,11 @@
 const req = require("express/lib/request");
 const res = require("express/lib/response");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 var User = require("../models/user.js");
 const { ErrorHandler, getErrorMessage } = require("../helpers/error.js");
 
-function createUser(payload, next) {
+function createUser(payload) {
   const user = new User(payload);
   return user
     .save()
@@ -15,4 +17,26 @@ function createUser(payload, next) {
     });
 }
 
-module.exports = { createUser };
+function loginUser(payload) {
+  return User.findOne({ email: payload.email }).then((user) => {
+    if (!user) {
+      throw new ErrorHandler(
+        500,
+        getErrorMessage({ statusCode: "500", message: "Email not found" })
+      );
+    }
+    return bcrypt.compare(payload.password, user.password).then((valid) => {
+      if (!valid) {
+        throw new ErrorHandler(403, "Wrong password");
+      }
+      return {
+        userId: user._id,
+        token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
+          expiresIn: "24h",
+        }),
+      };
+    });
+  });
+}
+
+module.exports = { createUser, loginUser };
