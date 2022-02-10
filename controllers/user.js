@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 var User = require("../models/user.js");
 const { ErrorHandler, getErrorMessage } = require("../helpers/error.js");
+require("dotenv").config();
 
 function createUser(payload) {
   const user = new User(payload);
@@ -30,8 +31,8 @@ function loginUser(payload) {
         throw new ErrorHandler(403, "Wrong password");
       }
       return {
-        userId: user._id,
-        token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
+        userId: user.email,
+        token: jwt.sign({ userId: user.email }, process.env.JWT_SECRET, {
           expiresIn: "24h",
         }),
       };
