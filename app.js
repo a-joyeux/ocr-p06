@@ -2,6 +2,7 @@ const express = require("express");
 var mongoose = require("mongoose");
 var router = require("./router/router.js");
 const bodyParser = require("body-parser");
+const { handleError } = require("./helpers/error.js");
 
 mongoose
   .connect("mongodb://localhost/piquante", {
@@ -16,6 +17,7 @@ mongoose
     app.use(bodyParser.json());
     app.use(router);
     app.use((err, req, res, next) => {
+      console.log(err);
       handleError(err, res);
     });
     app.listen(port, () => {

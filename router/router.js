@@ -8,9 +8,13 @@ router.get("/", function (req, res) {
 });
 
 router.post("/api/auth/signup", function (req, res, next) {
-  User.createUser(req.body, next).then((response) => {
-    res.send(response);
-  });
+  User.createUser(req.body, next)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 module.exports = router;
