@@ -3,9 +3,11 @@ var mongoose = require("mongoose");
 var router = require("./router/router.js");
 const bodyParser = require("body-parser");
 const { handleError } = require("./helpers/error.js");
+require("dotenv").config();
 
+console.log(process.env.MONGO_URI);
 mongoose
-  .connect("mongodb://localhost/piquante", {
+  .connect(process.env.MONGO_URI, {
     autoIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
