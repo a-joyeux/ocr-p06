@@ -1,4 +1,5 @@
 var Sauce = require("../models/sauce.js");
+var User = require("./user.js");
 const { ErrorHandler } = require("../helpers/error.js");
 
 function createSauce(payload) {
@@ -10,6 +11,17 @@ function createSauce(payload) {
     })
     .catch((err) => {
       throw new ErrorHandler(500, "Error in sauce creation");
+    });
+}
+
+function findSauce(sauceId) {
+  return Sauce.findById(sauceId)
+    .exec()
+    .then((sauce) => {
+      return sauce;
+    })
+    .catch((err) => {
+      throw new ErrorHandler(500, `Cannot find sauce with id: ${sauceId}`);
     });
 }
 
@@ -28,11 +40,18 @@ function likeSauce(sauceId, userInfos) {
   return Sauce.findById(sauceId)
     .exec()
     .then((sauce) => {
-      return sauce;
+      User.findUser(userInfos)
+        .then((user) => {
+          sauce.usersLiked.push(user);
+          sauce.save();
+        })
+        .catch((err) => {
+          throw new ErrorHandler(500, "Error with like function");
+        });
     })
     .catch((err) => {
       throw new ErrorHandler(500, `Cannot find sauce with id: ${sauceId}`);
     });
 }
 
-module.exports = { createSauce, findAll, likeSauce };
+module.exports = { createSauce, findAll, likeSauce, findSauce };

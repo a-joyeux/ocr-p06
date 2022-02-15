@@ -20,6 +20,17 @@ router.get("/api/sauces", auth, function (req, res, next) {
     });
 });
 
+// GET Sauce by ID
+router.get("/api/sauces/:id", auth, function (req, res, next) {
+  Sauce.findSauce(req.params.id)
+    .then((sauce) => {
+      res.send(sauce);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 router.post("/api/sauces/:id/like", auth, function (req, res, next) {
   Sauce.likeSauce(req.params.id, req.body)
     .then((response) => {

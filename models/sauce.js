@@ -29,14 +29,18 @@ var SauceSchema = new mongoose.Schema({
   dislikes: {
     type: Number,
   },
-  usersLiked: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  usersDisliked: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
+  usersLiked: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  usersDisliked: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Sauce", SauceSchema);

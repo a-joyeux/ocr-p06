@@ -18,6 +18,18 @@ function createUser(payload) {
     });
 }
 
+function findUser(payload) {
+  return User.findOne({ email: payload.userId }).then((user) => {
+    if (!user) {
+      throw new ErrorHandler(
+        500,
+        getErrorMessage({ statusCode: "500", message: "Email not found" })
+      );
+    }
+    return user;
+  });
+}
+
 function loginUser(payload) {
   return User.findOne({ email: payload.email }).then((user) => {
     if (!user) {
@@ -40,4 +52,4 @@ function loginUser(payload) {
   });
 }
 
-module.exports = { createUser, loginUser };
+module.exports = { createUser, loginUser, findUser };
