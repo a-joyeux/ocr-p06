@@ -9,9 +9,29 @@ router.get("/", auth, function (req, res) {
   res.send("Hello world!");
 });
 
-router.post("/api/sauces", auth, function (req, res) {
-  console.log("router api sauces");
-  console.log(req);
+// GET all sauces
+router.get("/api/sauces", auth, function (req, res, next) {
+  Sauce.findAll()
+    .then((sauces) => {
+      res.send(sauces);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+router.post("/api/sauces/:id/like", auth, function (req, res, next) {
+  Sauce.likeSauce(req.params.id, req.body)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+// Create a sauce
+router.post("/api/sauces", auth, function (req, res, next) {
   Sauce.createSauce(req.body)
     .then((response) => {
       res.send(response);
