@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const { handleError } = require("./helpers/error.js");
 require("dotenv").config();
 
-console.log(process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI, {
     autoIndex: true,
@@ -16,10 +15,18 @@ mongoose
     const app = express();
     const port = 3000;
 
+    app.use(function (req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      );
+      next();
+    });
     app.use(bodyParser.json());
     app.use(router);
     app.use((err, req, res, next) => {
-      console.log("ERROR === ", err);
       handleError(err, res);
     });
     app.listen(port, () => {

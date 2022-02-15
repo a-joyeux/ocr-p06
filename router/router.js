@@ -1,10 +1,24 @@
 var User = require("../controllers/user.js");
+var Sauce = require("../controllers/sauce.js");
 var express = require("express");
 var router = express.Router();
 const { auth } = require("../helpers/auth.js");
+const { response } = require("express");
 
 router.get("/", auth, function (req, res) {
   res.send("Hello world!");
+});
+
+router.post("/api/sauces", auth, function (req, res) {
+  console.log("router api sauces");
+  console.log(req);
+  Sauce.createSauce(req.body)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 // Auth the user

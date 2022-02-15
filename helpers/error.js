@@ -14,6 +14,7 @@ const getErrorMessage = (err) => {
       err.keyValue[Object.keys(err.keyValue)]
     }`;
   }
+  console.log(err);
   return Object.values(err.errors).map((error) => error.message);
 };
 
