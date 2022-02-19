@@ -5,9 +5,12 @@ const { ErrorHandler } = require("../helpers/error.js");
 function createSauce(payload) {
   const sauce = new Sauce({
     ...JSON.parse(payload.body.sauce),
+    likes: 0,
+    dislikes: 0,
+    usersLiked: [],
+    usersDisliked: [],
     imageUrl: `${payload.protocol}://${payload.get("host")}/images/${payload.file.filename}`,
   });
-  console.log(sauce);
   return sauce
     .save()
     .then((sauce) => {
@@ -40,11 +43,16 @@ function findAll() {
     });
 }
 
+function updateLikes(sauce) {
+  sauce.likes = sauce.usersLiked.length;
+  sauce.dislikes = sauce.usersDisliked.length;
+}
+
 function likeSauce(sauceId, userInfos) {
-  return Sauce.findById(sauceId)
+  return Sauce.findById({ _id: sauceId })
     .exec()
     .then((sauce) => {
-      User.findUser(userInfos.userId)
+      return User.findUser(userInfos.userId)
         .then((user) => {
           if (userInfos.like == 1 && !sauce.usersLiked.includes(user._id)) {
             sauce.usersLiked.push(user);
@@ -56,8 +64,17 @@ function likeSauce(sauceId, userInfos) {
             sauce.usersLiked = sauce.usersLiked.filter((elem) => {
               elem !== user._id;
             });
+          } else if (userInfos.like == 0) {
+            sauce.usersLiked = sauce.usersLiked.filter((elem) => {
+              elem !== user._id;
+            });
+            sauce.usersDisliked = sauce.usersDisliked.filter((elem) => {
+              elem !== user._id;
+            });
           }
+          updateLikes(sauce);
           sauce.save();
+
           return { message: "Like status updated successfully" };
         })
         .catch((err) => {
