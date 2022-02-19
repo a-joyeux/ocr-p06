@@ -13,7 +13,6 @@ function auth(req, res, next) {
       next();
     }
   } catch (error) {
-    console.log(error);
     throw new ErrorHandler(401, "Invalid token");
   }
 }

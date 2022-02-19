@@ -3,7 +3,11 @@ var User = require("./user.js");
 const { ErrorHandler } = require("../helpers/error.js");
 
 function createSauce(payload) {
-  const sauce = new Sauce(payload);
+  const sauce = new Sauce({
+    ...JSON.parse(payload.body.sauce),
+    imageUrl: `${payload.protocol}://${payload.get("host")}/images/${payload.file.filename}`,
+  });
+  console.log(sauce);
   return sauce
     .save()
     .then((sauce) => {

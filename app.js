@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var router = require("./router/router.js");
 const bodyParser = require("body-parser");
 const { handleError } = require("./helpers/error.js");
+const path = require("path");
 require("dotenv").config();
 
 mongoose
@@ -18,13 +19,12 @@ mongoose
     app.use(function (req, res, next) {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-      );
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
       next();
     });
+    app.use("/images", express.static(path.join(__dirname, "images")));
     app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(router);
     app.use((err, req, res, next) => {
       handleError(err, res);
@@ -34,6 +34,5 @@ mongoose
     });
   })
   .catch((err) => {
-    console.log(err);
     return err;
   });
