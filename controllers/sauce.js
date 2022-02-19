@@ -21,6 +21,22 @@ function createSauce(payload) {
     });
 }
 
+function updateSauce(payload) {
+  const sauce = payload.file
+    ? {
+        ...JSON.parse(payload.body.sauce),
+        imageUrl: `${payload.protocol}://${payload.get("host")}/images/${payload.file.filename}`,
+      }
+    : { ...payload.body };
+  return Sauce.updateOne({ _id: payload.params.id }, { ...sauce, _id: payload.params.id })
+    .then(() => {
+      return { message: "Sauce updated successfully" };
+    })
+    .catch((err) => {
+      throw new ErrorHandler(500, "Error with sauce update");
+    });
+}
+
 function findSauce(sauceId) {
   return Sauce.findById(sauceId)
     .exec()
@@ -86,4 +102,4 @@ function likeSauce(sauceId, userInfos) {
     });
 }
 
-module.exports = { createSauce, findAll, likeSauce, findSauce };
+module.exports = { createSauce, findAll, likeSauce, findSauce, updateSauce };

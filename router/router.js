@@ -54,6 +54,18 @@ router.post("/api/sauces", auth, multer, function (req, res, next) {
     });
 });
 
+// Update a sauce
+
+router.put("/api/sauces/:id", auth, multer, function (req, res, next) {
+  Sauce.updateSauce(req)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 // Auth the user
 router.post("/api/auth/login", function (req, res, next) {
   User.loginUser(req.body, next)
