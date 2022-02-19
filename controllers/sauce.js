@@ -40,7 +40,7 @@ function likeSauce(sauceId, userInfos) {
   return Sauce.findById(sauceId)
     .exec()
     .then((sauce) => {
-      User.findUser(userInfos)
+      User.findUser(userInfos.userId)
         .then((user) => {
           if (userInfos.like == 1 && !sauce.usersLiked.includes(user._id)) {
             sauce.usersLiked.push(user);

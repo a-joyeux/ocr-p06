@@ -2,7 +2,8 @@ var mongoose = require("mongoose");
 
 var SauceSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: [true, "userID is required"],
   },
   name: {

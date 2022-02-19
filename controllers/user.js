@@ -18,8 +18,8 @@ function createUser(payload) {
     });
 }
 
-function findUser(payload) {
-  return User.findOne({ email: payload.userId }).then((user) => {
+function findUser(userId) {
+  return User.findById(userId).then((user) => {
     if (!user) {
       throw new ErrorHandler(500, getErrorMessage({ statusCode: "500", message: "Email not found" }));
     }
@@ -38,7 +38,7 @@ function loginUser(payload) {
       }
       return {
         userId: user._id,
-        token: jwt.sign({ userId: user.email }, process.env.JWT_SECRET, {
+        token: jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
           expiresIn: "24h",
         }),
       };
