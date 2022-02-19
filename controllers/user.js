@@ -21,10 +21,7 @@ function createUser(payload) {
 function findUser(payload) {
   return User.findOne({ email: payload.userId }).then((user) => {
     if (!user) {
-      throw new ErrorHandler(
-        500,
-        getErrorMessage({ statusCode: "500", message: "Email not found" })
-      );
+      throw new ErrorHandler(500, getErrorMessage({ statusCode: "500", message: "Email not found" }));
     }
     return user;
   });
@@ -33,17 +30,14 @@ function findUser(payload) {
 function loginUser(payload) {
   return User.findOne({ email: payload.email }).then((user) => {
     if (!user) {
-      throw new ErrorHandler(
-        500,
-        getErrorMessage({ statusCode: "500", message: "Email not found" })
-      );
+      throw new ErrorHandler(500, getErrorMessage({ statusCode: "500", message: "Email not found" }));
     }
     return bcrypt.compare(payload.password, user.password).then((valid) => {
       if (!valid) {
         throw new ErrorHandler(403, "Wrong password");
       }
       return {
-        userId: user.email,
+        userId: user._id,
         token: jwt.sign({ userId: user.email }, process.env.JWT_SECRET, {
           expiresIn: "24h",
         }),

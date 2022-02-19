@@ -31,9 +31,11 @@ router.get("/api/sauces/:id", auth, function (req, res, next) {
     });
 });
 
+// Like/Dislike a Sauce
 router.post("/api/sauces/:id/like", auth, function (req, res, next) {
   Sauce.likeSauce(req.params.id, req.body)
     .then((response) => {
+      console.log(response);
       res.send(response);
     })
     .catch((err) => {

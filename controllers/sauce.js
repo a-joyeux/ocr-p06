@@ -42,11 +42,22 @@ function likeSauce(sauceId, userInfos) {
     .then((sauce) => {
       User.findUser(userInfos)
         .then((user) => {
-          sauce.usersLiked.push(user);
+          if (userInfos.like == 1 && !sauce.usersLiked.includes(user._id)) {
+            sauce.usersLiked.push(user);
+            sauce.usersDisliked = sauce.usersDisliked.filter((elem) => {
+              elem !== user._id;
+            });
+          } else if (userInfos.like == -1 && !sauce.usersDisliked.includes(user._id)) {
+            sauce.usersDisliked.push(user);
+            sauce.usersLiked = sauce.usersLiked.filter((elem) => {
+              elem !== user._id;
+            });
+          }
           sauce.save();
+          return { message: "Like status updated successfully" };
         })
         .catch((err) => {
-          throw new ErrorHandler(500, "Error with like function");
+          throw new ErrorHandler(500, `Cannot find user with email: ${userInfos.email}`);
         });
     })
     .catch((err) => {
