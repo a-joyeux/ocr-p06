@@ -66,6 +66,18 @@ router.put("/api/sauces/:id", auth, multer, function (req, res, next) {
     });
 });
 
+// Delete a sauce
+
+router.delete("/api/sauces/:id", auth, multer, function (req, res, next) {
+  Sauce.deleteSauce(req.params.id)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 // Auth the user
 router.post("/api/auth/login", function (req, res, next) {
   User.loginUser(req.body, next)

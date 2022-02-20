@@ -10,11 +10,8 @@ class ErrorHandler extends Error {
 
 const getErrorMessage = (err) => {
   if (err.code) {
-    return `Duplicate key error for : ${Object.keys(err.keyValue)} : ${
-      err.keyValue[Object.keys(err.keyValue)]
-    }`;
+    return `Duplicate key error for : ${Object.keys(err.keyValue)} : ${err.keyValue[Object.keys(err.keyValue)]}`;
   }
-  console.log(err);
   return Object.values(err.errors).map((error) => error.message);
 };
 

@@ -1,5 +1,6 @@
 var Sauce = require("../models/sauce.js");
 var User = require("./user.js");
+const fs = require("fs");
 const { ErrorHandler } = require("../helpers/error.js");
 
 function createSauce(payload) {
@@ -35,6 +36,27 @@ function updateSauce(payload) {
     .catch((err) => {
       throw new ErrorHandler(500, "Error with sauce update");
     });
+}
+
+function deleteSauce(sauceId) {
+  return findSauce(sauceId).then((sauce) => {
+    console.log("Sauce = ", sauce);
+    const filename = sauce.imageUrl.split("/images/")[1];
+    try {
+      console.log("Before delete");
+      fs.unlinkSync(`images/${filename}`);
+      console.log("After delete");
+      return Sauce.deleteOne({ _id: sauceId })
+        .then(() => {
+          return { message: "Sauce delete succeeded" };
+        })
+        .catch((error) => {
+          throw new ErrorHandler(500, "Error with sauce deletion");
+        });
+    } catch {
+      throw new ErrorHandler(500, "Error with sauce deletion");
+    }
+  });
 }
 
 function findSauce(sauceId) {
@@ -102,4 +124,4 @@ function likeSauce(sauceId, userInfos) {
     });
 }
 
-module.exports = { createSauce, findAll, likeSauce, findSauce, updateSauce };
+module.exports = { createSauce, findAll, likeSauce, findSauce, updateSauce, deleteSauce };
