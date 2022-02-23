@@ -8,11 +8,6 @@ require("dotenv").config();
 
 function createUser(payload) {
   const user = new User(payload);
-  // isValidEmail =
-  //   /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-  // if (!isValidEmail.test(user.email)) {
-  //   throw new ErrorHandler(500, "Invalid email format");
-  // }
   return user
     .save()
     .then((user) => {
@@ -26,7 +21,7 @@ function createUser(payload) {
 function findUser(userId) {
   return User.findById(userId).then((user) => {
     if (!user) {
-      throw new ErrorHandler(500, getErrorMessage({ statusCode: "500", message: "Email not found" }));
+      throw new ErrorHandler(500, "Email not found");
     }
     return user;
   });
@@ -35,11 +30,11 @@ function findUser(userId) {
 function loginUser(payload) {
   return User.findOne({ email: payload.email }).then((user) => {
     if (!user) {
-      throw new ErrorHandler(500, getErrorMessage({ statusCode: "500", message: "Email not found" }));
+      throw new ErrorHandler(500, "Email not found");
     }
     return bcrypt.compare(payload.password, user.password).then((valid) => {
       if (!valid) {
-        throw new ErrorHandler(403, "Wrong password");
+        throw new ErrorHandler(403, "Invalid credentials");
       }
       return {
         userId: user._id,
