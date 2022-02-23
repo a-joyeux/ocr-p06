@@ -8,6 +8,11 @@ require("dotenv").config();
 
 function createUser(payload) {
   const user = new User(payload);
+  // isValidEmail =
+  //   /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+  // if (!isValidEmail.test(user.email)) {
+  //   throw new ErrorHandler(500, "Invalid email format");
+  // }
   return user
     .save()
     .then((user) => {

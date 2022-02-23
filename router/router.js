@@ -69,7 +69,8 @@ router.put("/api/sauces/:id", auth, multer, function (req, res, next) {
 // Delete a sauce
 
 router.delete("/api/sauces/:id", auth, multer, function (req, res, next) {
-  Sauce.deleteSauce(req.params.id)
+  const token = req.headers.authorization.split(" ")[1];
+  Sauce.deleteSauce(req.params.id, token)
     .then((response) => {
       res.send(response);
     })

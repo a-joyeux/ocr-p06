@@ -1,7 +1,9 @@
 var Sauce = require("../models/sauce.js");
 var User = require("./user.js");
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
 const { ErrorHandler } = require("../helpers/error.js");
+require("dotenv").config();
 
 function createSauce(payload) {
   const sauce = new Sauce({
@@ -38,14 +40,15 @@ function updateSauce(payload) {
     });
 }
 
-function deleteSauce(sauceId) {
+function deleteSauce(sauceId, token) {
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   return findSauce(sauceId).then((sauce) => {
-    console.log("Sauce = ", sauce);
     const filename = sauce.imageUrl.split("/images/")[1];
+    if (sauce.userId !== decodedToken.userId) {
+      throw new ErrorHandler(403, "Unauthorized request");
+    }
     try {
-      console.log("Before delete");
       fs.unlinkSync(`images/${filename}`);
-      console.log("After delete");
       return Sauce.deleteOne({ _id: sauceId })
         .then(() => {
           return { message: "Sauce delete succeeded" };

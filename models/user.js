@@ -7,6 +7,7 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: [true, "Email is mandatory"],
     unique: true,
+    match: [/^\S+@\S+\.\S+$/, "Please use a valid email address."],
   },
   password: {
     type: String,
