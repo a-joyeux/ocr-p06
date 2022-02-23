@@ -4,6 +4,8 @@ var express = require("express");
 var router = express.Router();
 const { auth } = require("../helpers/auth.js");
 const multer = require("../helpers/multer-config");
+const { ErrorHandler } = require("../helpers/error.js");
+
 const { response } = require("express");
 
 router.get("/", auth, function (req, res) {
@@ -45,13 +47,15 @@ router.post("/api/sauces/:id/like", auth, function (req, res, next) {
 
 // Create a sauce
 router.post("/api/sauces", auth, multer, function (req, res, next) {
-  Sauce.createSauce(req)
-    .then((response) => {
-      res.send(response);
-    })
-    .catch((err) => {
-      next(err);
-    });
+  if (req.file) {
+    Sauce.createSauce(req)
+      .then((response) => {
+        res.send(response);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else throw new ErrorHandler(500, "Image file is required");
 });
 
 // Update a sauce

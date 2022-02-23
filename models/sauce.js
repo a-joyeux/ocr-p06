@@ -8,21 +8,26 @@ var SauceSchema = new mongoose.Schema({
   },
   name: {
     type: String,
+    required: [true, "name is required"],
   },
   manufacturer: {
     type: String,
+    required: [true, "manufacturer is required"],
   },
   description: {
     type: String,
+    required: [true, "description is required"],
   },
   mainPepper: {
     type: String,
+    required: [true, "mainPepper is required"],
   },
   imageUrl: {
     type: String,
   },
   heat: {
     type: Number,
+    required: [true, "heat is required"],
   },
   likes: {
     type: Number,
