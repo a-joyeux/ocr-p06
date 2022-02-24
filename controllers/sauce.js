@@ -29,7 +29,6 @@ function deleteImagefromSauce(sauce) {
   const filename = sauce.imageUrl.split("/images/")[1];
   try {
     fs.unlinkSync(`images/${filename}`);
-    console.log("Sauce deleted");
   } catch {
     throw new ErrorHandler(500, "Cannot delete image");
   }
@@ -59,7 +58,6 @@ function deleteSauce(sauceId, token) {
   return findSauce(sauceId).then((sauce) => {
     const filename = sauce.imageUrl.split("/images/")[1];
     if (sauce.userId.toString() !== decodedToken.userId) {
-      console.log("Sauce userId = ", sauce.userID, "userId token =", decodedToken.userId);
       throw new ErrorHandler(403, "Unauthorized request");
     }
     try {
@@ -130,7 +128,6 @@ function likeSauce(sauceId, userInfos) {
           }
           updateLikes(sauce);
           sauce.save();
-
           return { message: "Like status updated successfully" };
         })
         .catch((err) => {
