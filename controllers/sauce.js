@@ -3,6 +3,7 @@ var User = require("./user.js");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const { ErrorHandler } = require("../helpers/error.js");
+const { nextTick } = require("process");
 require("dotenv").config();
 
 function createSauce(payload) {
@@ -24,27 +25,41 @@ function createSauce(payload) {
     });
 }
 
+function deleteImagefromSauce(sauce) {
+  const filename = sauce.imageUrl.split("/images/")[1];
+  try {
+    fs.unlinkSync(`images/${filename}`);
+    console.log("Sauce deleted");
+  } catch {
+    throw new ErrorHandler(500, "Cannot delete image");
+  }
+}
+
 function updateSauce(payload) {
-  const sauce = payload.file
-    ? {
-        ...JSON.parse(payload.body.sauce),
-        imageUrl: `${payload.protocol}://${payload.get("host")}/images/${payload.file.filename}`,
-      }
-    : { ...payload.body };
-  return Sauce.updateOne({ _id: payload.params.id }, { ...sauce, _id: payload.params.id })
-    .then(() => {
-      return { message: "Sauce updated successfully" };
-    })
-    .catch((err) => {
-      throw new ErrorHandler(500, "Error with sauce update");
-    });
+  return findSauce(payload.params.id).then((previousSauce) => {
+    if (payload.file) deleteImagefromSauce(previousSauce);
+    const sauce = payload.file
+      ? {
+          ...JSON.parse(payload.body.sauce),
+          imageUrl: `${payload.protocol}://${payload.get("host")}/images/${payload.file.filename}`,
+        }
+      : { ...payload.body };
+    return Sauce.updateOne({ _id: previousSauce._id }, { ...sauce, _id: previousSauce._id })
+      .then(() => {
+        return { message: "Sauce updated successfully" };
+      })
+      .catch((err) => {
+        throw new ErrorHandler(500, "Error with sauce update");
+      });
+  });
 }
 
 function deleteSauce(sauceId, token) {
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   return findSauce(sauceId).then((sauce) => {
     const filename = sauce.imageUrl.split("/images/")[1];
-    if (sauce.userId !== decodedToken.userId) {
+    if (sauce.userId.toString() !== decodedToken.userId) {
+      console.log("Sauce userId = ", sauce.userID, "userId token =", decodedToken.userId);
       throw new ErrorHandler(403, "Unauthorized request");
     }
     try {
