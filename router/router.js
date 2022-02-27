@@ -8,10 +8,6 @@ const { ErrorHandler } = require("../helpers/error.js");
 
 const { response } = require("express");
 
-router.get("/", auth, function (req, res) {
-  res.send("Hello world!");
-});
-
 // GET all sauces
 router.get("/api/sauces", auth, function (req, res, next) {
   Sauce.findAll()

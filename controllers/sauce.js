@@ -97,11 +97,6 @@ function findAll() {
     });
 }
 
-function updateLikes(sauce) {
-  sauce.likes = sauce.usersLiked.length;
-  sauce.dislikes = sauce.usersDisliked.length;
-}
-
 function likeSauce(sauceId, userInfos) {
   return Sauce.findById({ _id: sauceId })
     .exec()
@@ -110,23 +105,16 @@ function likeSauce(sauceId, userInfos) {
         .then((user) => {
           if (userInfos.like == 1 && !sauce.usersLiked.includes(user._id)) {
             sauce.usersLiked.push(user);
-            sauce.usersDisliked = sauce.usersDisliked.filter((elem) => {
-              elem !== user._id;
-            });
+            sauce.usersDisliked = sauce.usersDisliked.filter((elem) => !elem.equals(user._id));
           } else if (userInfos.like == -1 && !sauce.usersDisliked.includes(user._id)) {
             sauce.usersDisliked.push(user);
-            sauce.usersLiked = sauce.usersLiked.filter((elem) => {
-              elem !== user._id;
-            });
+            sauce.usersLiked = sauce.usersLiked.filter((elem) => !elem.equals(user._id));
           } else if (userInfos.like == 0) {
-            sauce.usersLiked = sauce.usersLiked.filter((elem) => {
-              elem !== user._id;
-            });
-            sauce.usersDisliked = sauce.usersDisliked.filter((elem) => {
-              elem !== user._id;
-            });
+            sauce.usersLiked = sauce.usersLiked.filter((elem) => !elem.equals(user._id));
+            sauce.usersDisliked = sauce.usersDisliked.filter((elem) => !elem.equals(user._id));
           }
-          updateLikes(sauce);
+          sauce.likes = sauce.usersLiked.length;
+          sauce.dislikes = sauce.usersDisliked.length;
           sauce.save();
           return { message: "Like status updated successfully" };
         })
