@@ -12,7 +12,7 @@ const { response } = require("express");
 router.get("/api/sauces", auth, function (req, res, next) {
   Sauce.findAll()
     .then((sauces) => {
-      res.send(sauces);
+      res.status(200).json(sauces);
     })
     .catch((err) => {
       next(err);
@@ -23,7 +23,7 @@ router.get("/api/sauces", auth, function (req, res, next) {
 router.get("/api/sauces/:id", auth, function (req, res, next) {
   Sauce.findSauce(req.params.id)
     .then((sauce) => {
-      res.send(sauce);
+      res.status(200).json(sauces);
     })
     .catch((err) => {
       next(err);
@@ -34,7 +34,7 @@ router.get("/api/sauces/:id", auth, function (req, res, next) {
 router.post("/api/sauces/:id/like", auth, function (req, res, next) {
   Sauce.likeSauce(req.params.id, req.body)
     .then((response) => {
-      res.send(response);
+      res.status(200).json(response);
     })
     .catch((err) => {
       next(err);
@@ -46,7 +46,7 @@ router.post("/api/sauces", auth, multer, function (req, res, next) {
   if (req.file) {
     Sauce.createSauce(req)
       .then((response) => {
-        res.send(response);
+        res.status(201).json(response);
       })
       .catch((err) => {
         next(err);
@@ -59,7 +59,7 @@ router.post("/api/sauces", auth, multer, function (req, res, next) {
 router.put("/api/sauces/:id", auth, multer, function (req, res, next) {
   Sauce.updateSauce(req)
     .then((response) => {
-      res.send(response);
+      res.status(200).json(response);
     })
     .catch((err) => {
       next(err);
@@ -72,7 +72,7 @@ router.delete("/api/sauces/:id", auth, multer, function (req, res, next) {
   const token = req.headers.authorization.split(" ")[1];
   Sauce.deleteSauce(req.params.id, token)
     .then((response) => {
-      res.send(response);
+      res.status(200).json(response);
     })
     .catch((err) => {
       next(err);
@@ -83,7 +83,7 @@ router.delete("/api/sauces/:id", auth, multer, function (req, res, next) {
 router.post("/api/auth/login", function (req, res, next) {
   User.loginUser(req.body, next)
     .then((response) => {
-      res.send(response);
+      res.status(200).json(response);
     })
     .catch((err) => {
       next(err);
@@ -93,7 +93,7 @@ router.post("/api/auth/login", function (req, res, next) {
 router.post("/api/auth/signup", function (req, res, next) {
   User.createUser(req.body, next)
     .then((response) => {
-      res.send(response);
+      res.status(201).json(response);
     })
     .catch((err) => {
       next(err);

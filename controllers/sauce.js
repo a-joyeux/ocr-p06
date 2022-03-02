@@ -82,7 +82,7 @@ function findSauce(sauceId) {
       return sauce;
     })
     .catch((err) => {
-      throw new ErrorHandler(500, `Cannot find sauce with id: ${sauceId}`);
+      throw new ErrorHandler(404, `Cannot find sauce with id: ${sauceId}`);
     });
 }
 
@@ -119,11 +119,11 @@ function likeSauce(sauceId, userInfos) {
           return { message: "Like status updated successfully" };
         })
         .catch((err) => {
-          throw new ErrorHandler(500, `Cannot find user with email: ${userInfos.email}`);
+          throw new ErrorHandler(404, `Cannot find user with email: ${userInfos.email}`);
         });
     })
     .catch((err) => {
-      throw new ErrorHandler(500, `Cannot find sauce with id: ${sauceId}`);
+      throw new ErrorHandler(404, `Cannot find sauce with id: ${sauceId}`);
     });
 }
 

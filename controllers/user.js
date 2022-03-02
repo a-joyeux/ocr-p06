@@ -21,7 +21,7 @@ function createUser(payload) {
 function findUser(userId) {
   return User.findById(userId).then((user) => {
     if (!user) {
-      throw new ErrorHandler(500, "Email not found");
+      throw new ErrorHandler(404, "Email not found");
     }
     return user;
   });
@@ -30,7 +30,7 @@ function findUser(userId) {
 function loginUser(payload) {
   return User.findOne({ email: payload.email }).then((user) => {
     if (!user) {
-      throw new ErrorHandler(500, "Email not found");
+      throw new ErrorHandler(404, "Email not found");
     }
     return bcrypt.compare(payload.password, user.password).then((valid) => {
       if (!valid) {
